@@ -11,6 +11,7 @@ import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,9 +51,20 @@ public class MainActivity extends AppCompatActivity {
         array = mdb.getArray();
         MyAdapter adapter = new MyAdapter(inflater, array);
         lv.setAdapter(adapter);
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplication(), SecondActivity.class);
+                intent.putExtra("ids", array.get(position).getIds());
+                startActivity(intent);
+                MainActivity.this.finish();
+            }
+        });
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,final int position, long id) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("删除")
                         .setMessage("是否删除笔记")
@@ -72,18 +84,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .create().show();
-                return;
+                return true;
             }
         });
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplication(), SecondActivity.class);
-                intent.putExtra("ids", array.get(position).getIds());
-                startActivity(intent);
-                MainActivity.this.finish();
-            }
-        });
+
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
